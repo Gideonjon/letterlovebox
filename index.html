@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Special Message 💌</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        /* ENVELOPE STAGE */
+        .envelope-stage {
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .envelope-stage.hidden {
+            display: none;
+        }
+
+        .envelope-wrapper {
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .envelope {
+            width: 280px;
+            height: 180px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .envelope {
+                width: 250px;
+                height: 160px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .envelope {
+                width: 220px;
+                height: 140px;
+            }
+        }
+
+        .envelope:hover {
+            transform: translateY(-10px);
+        }
+
+        .envelope-front {
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            border: 2px solid #ddd;
+        }
+
+        .envelope-flap {
+            width: 0;
+            height: 0;
+            border-left: 140px solid transparent;
+            border-right: 140px solid transparent;
+            border-top: 90px solid #f48fb1;
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-radius: 10px 10px 0 0;
+            transform-origin: top center;
+            transition: transform 0.8s ease;
+        }
+
+        @media (max-width: 768px) {
+            .envelope-flap {
+                border-left: 125px solid transparent;
+                border-right: 125px solid transparent;
+                border-top: 80px solid #f48fb1;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .envelope-flap {
+                border-left: 110px solid transparent;
+                border-right: 110px solid transparent;
+                border-top: 70px solid #f48fb1;
+            }
+        }
+
+        .envelope.opened .envelope-flap {
+            transform: rotateX(180deg);
+        }
+
+        .envelope-heart {
+            font-size: 50px;
+            z-index: 10;
+            animation: heartBeat 1.5s ease-in-out infinite;
+        }
+
+        @media (max-width: 768px) {
+            .envelope-heart {
+                font-size: 45px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .envelope-heart {
+                font-size: 40px;
+            }
+        }
+
+        @keyframes heartBeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+        }
+
+        .envelope-text {
+            font-size: 16px;
+            color: #666;
+            margin-top: 80px;
+            font-weight: 500;
+        }
+
+        .click-hint {
+            font-size: 12px;
+            color: #999;
+            margin-top: 20px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+
+        /* PROPOSAL STAGE */
+        .proposal-stage {
+            background: white;
+            border-radius: 20px;
+            padding: 60px 50px;
+            max-width: 700px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideIn 0.8s ease-out;
+            display: none;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            .proposal-stage {
+                padding: 40px 30px;
+                border-radius: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .proposal-stage {
+                padding: 30px 20px;
+                border-radius: 12px;
+                max-width: 100%;
+            }
+        }
+
+        .proposal-stage.hidden {
+            display: none;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .proposal-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .proposal-emoji {
+            font-size: 70px;
+            margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .proposal-title {
+            color: #333;
+            font-size: 32px;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 768px) {
+            .proposal-title {
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .proposal-title {
+                font-size: 24px;
+            }
+        }
+
+        .highlight {
+            color: #e91e63;
+            font-weight: bold;
+        }
+
+        .proposal-message {
+            color: #555;
+            font-size: 18px;
+            line-height: 1.8;
+            margin: 30px 0;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .proposal-message {
+                font-size: 16px;
+                margin: 20px 0;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .proposal-message {
+                font-size: 14px;
+                margin: 15px 0;
+                line-height: 1.6;
+            }
+        }
+
+        .proposal-message p {
+            margin-bottom: 15px;
+        }
+
+        .proposal-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        @media (max-width: 768px) {
+            .proposal-buttons {
+                gap: 15px;
+                margin-top: 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .proposal-buttons {
+                gap: 10px;
+                margin-top: 20px;
+                flex-direction: column;
+            }
+        }
+
+        button {
+            padding: 15px 40px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 768px) {
+            button {
+                padding: 12px 30px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            button {
+                padding: 10px 20px;
+                font-size: 12px;
+            }
+        }
+
+        .accept-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-width: 150px;
+        }
+
+        .accept-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+        }
+
+        .decline-btn {
+            background: #f44336;
+            color: white;
+            min-width: 150px;
+            position: relative;
+        }
+
+        .decline-btn:hover {
+            background: #d32f2f;
+        }
+
+        /* CELEBRATION STAGE */
+        .celebration-stage {
+            text-align: center;
+            animation: celebrate 0.6s ease-out;
+            display: none;
+        }
+
+        .celebration-stage.hidden {
+            display: none;
+        }
+
+        @keyframes celebrate {
+            0% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .celebration-content {
+            background: white;
+            border-radius: 20px;
+            padding: 60px 50px;
+            max-width: 700px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .celebration-content {
+                padding: 40px 30px;
+                border-radius: 15px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .celebration-content {
+                padding: 30px 20px;
+                border-radius: 12px;
+                max-width: 100%;
+            }
+        }
+
+        .celebration-emoji {
+            font-size: 100px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 480px) {
+            .celebration-emoji {
+                font-size: 80px;
+            }
+        }
+
+        .celebration-title {
+            color: #e91e63;
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .celebration-title {
+                font-size: 28px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .celebration-title {
+                font-size: 24px;
+            }
+        }
+
+        .celebration-text {
+            color: #555;
+            font-size: 20px;
+            line-height: 1.6;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .celebration-text {
+                font-size: 18px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .celebration-text {
+                font-size: 16px;
+            }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: #667eea;
+            pointer-events: none;
+            animation: confettiFall 3s ease-out forwards;
+        }
+
+        @keyframes confettiFall {
+            to {
+                transform: translateY(100vh) rotateZ(360deg);
+                opacity: 0;
+            }
+        }
+
+        .heart-rain {
+            position: fixed;
+            font-size: 30px;
+            pointer-events: none;
+            animation: heartFall 3s ease-out forwards;
+        }
+
+        @keyframes heartFall {
+            to {
+                transform: translateY(100vh);
+                opacity: 0;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .envelope-stage.hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- ENVELOPE STAGE -->
+        <div class="envelope-stage" id="envelopeStage">
+            <div class="envelope-wrapper" id="envelopeWrapper">
+                <div class="envelope" id="envelope">
+                    <div class="envelope-flap"></div>
+                    <div class="envelope-front">
+                        <div class="envelope-heart">💌</div>
+                        <div class="envelope-text">A Special Message</div>
+                        <div class="click-hint">Click to open</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PROPOSAL STAGE -->
+        <div class="proposal-stage" id="proposalStage">
+            <div class="proposal-header">
+                <div class="proposal-emoji">💕</div>
+                <h1 class="proposal-title">Will you be my <span class="highlight">girlfriend</span>?</h1>
+            </div>
+
+            <div class="proposal-message">
+                <p>Every moment with you feels like a dream come true.</p>
+                <p>You light up my days with your smile, your laughter, your presence.</p>
+                <p>I want to spend more moments with you, to build memories together, to be there for you in every way.</p>
+                <p style="font-weight: bold; color: #e91e63; margin-top: 30px;">So I'm asking you today: Will you be my girlfriend? 🌹</p>
+            </div>
+
+            <div class="proposal-buttons">
+                <button class="accept-btn" id="acceptBtn">YES! 💕</button>
+                <button class="decline-btn" id="declineBtn">No</button>
+            </div>
+        </div>
+
+        <!-- CELEBRATION STAGE -->
+        <div class="celebration-stage" id="celebrationStage">
+            <div class="celebration-content">
+                <div class="celebration-emoji">🎉</div>
+                <h1 class="celebration-title">YES! You just made me the happiest! 🥳</h1>
+                <div class="celebration-text">
+                    <p>I promise to cherish every moment with you.</p>
+                    <p style="font-size: 24px; color: #e91e63; margin-top: 30px;">💑 Our story just began 💑</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const envelope = document.getElementById('envelope');
+        const envelopeWrapper = document.getElementById('envelopeWrapper');
+        const envelopeStage = document.getElementById('envelopeStage');
+        const proposalStage = document.getElementById('proposalStage');
+        const celebrationStage = document.getElementById('celebrationStage');
+        const acceptBtn = document.getElementById('acceptBtn');
+        const declineBtn = document.getElementById('declineBtn');
+        let declineClickCount = 0;
+
+        // Envelope click handler
+        envelopeWrapper.addEventListener('click', () => {
+            envelope.classList.add('opened');
+            
+            // Transition to proposal after envelope animation completes
+            setTimeout(() => {
+                envelopeStage.classList.add('hidden');
+                proposalStage.style.display = 'block';
+            }, 800);
+        });
+
+        // Accept button click handler
+        acceptBtn.addEventListener('click', () => {
+            proposalStage.style.display = 'none';
+            celebrationStage.style.display = 'block';
+            
+            // Change background color
+            document.body.style.background = 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)';
+            
+            // Create confetti
+            for (let i = 0; i < 40; i++) {
+                createConfetti();
+            }
+            
+            // Create heart rain
+            for (let i = 0; i < 30; i++) {
+                createHeartRain();
+            }
+        });
+
+        // Decline button - makes it move away
+        declineBtn.addEventListener('mouseover', moveDeclineButton);
+        declineBtn.addEventListener('click', moveDeclineButton);
+
+        function moveDeclineButton() {
+            declineClickCount++;
+            
+            // Increase accept button size
+            const scale = 1 + (declineClickCount * 0.15);
+            acceptBtn.style.transform = `scale(${scale})`;
+
+            // Random position for Decline button
+            const randomX = Math.random() * window.innerWidth * 0.4 - window.innerWidth * 0.2;
+            const randomY = Math.random() * window.innerHeight * 0.4 - window.innerHeight * 0.2;
+            
+            declineBtn.style.transform = `translate(${randomX}px, ${randomY}px)`;
+
+            // Change button text as attempts increase
+            if (declineClickCount === 1) {
+                declineBtn.textContent = 'Really?';
+            } else if (declineClickCount === 2) {
+                declineBtn.textContent = 'Come on...';
+            } else if (declineClickCount === 3) {
+                declineBtn.textContent = 'Please?';
+            } else if (declineClickCount >= 4) {
+                declineBtn.textContent = '😔';
+            }
+        }
+
+        function createConfetti() {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            confetti.style.left = Math.random() * window.innerWidth + 'px';
+            confetti.style.top = '-10px';
+            confetti.style.background = ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#e91e63'][Math.floor(Math.random() * 5)];
+            document.body.appendChild(confetti);
+            
+            setTimeout(() => confetti.remove(), 3000);
+        }
+
+        function createHeartRain() {
+            const heart = document.createElement('div');
+            heart.className = 'heart-rain';
+            heart.textContent = '❤️';
+            heart.style.left = Math.random() * window.innerWidth + 'px';
+            heart.style.top = '-30px';
+            heart.style.animationDuration = (2 + Math.random() * 1) + 's';
+            document.body.appendChild(heart);
+            
+            setTimeout(() => heart.remove(), 3000);
+        }
+    </script>
+</body>
+</html>
